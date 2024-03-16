@@ -339,7 +339,7 @@ extension OmniBLEPumpManager {
                 model: "Dash",
                 hardwareVersion: String(podState.productId),
                 firmwareVersion: podState.firmwareVersion + " " + podState.bleFirmwareVersion,
-                softwareVersion: String(OmniBLEVersionNumber),
+                softwareVersion: String(ApexBLEVersionNumber),
                 localIdentifier: String(format:"%04X", podState.address),
                 udiDeviceIdentifier: nil
             )
@@ -912,19 +912,19 @@ extension OmniBLEPumpManager {
     }
 
     // Called on the main thread
-    public func insertCannula(completion: @escaping (Result<TimeInterval,OmniBLEPumpManagerError>) -> Void) {
+    public func insertCannula(completion: @escaping (Result<TimeInterval,ApexBLEPumpManagerError>) -> Void) {
         
         #if targetEnvironment(simulator)
         let mockDelay = TimeInterval(seconds: 3)
         let mockFaultDuringInsertCannula = false
         DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + mockDelay) {
-            let result = self.setStateWithResult({ (state) -> Result<TimeInterval,OmniBLEPumpManagerError> in
+            let result = self.setStateWithResult({ (state) -> Result<TimeInterval,ApexBLEPumpManagerError> in
                 if mockFaultDuringInsertCannula {
                     let fault = try! DetailedStatus(encodedData: Data(hexadecimalString: "020d0000000e00c36a020703ff020900002899080082")!)
                     var podState = state.podState
                     podState?.fault = fault
                     state.updatePodStateFromPodComms(podState)
-                    return .failure(OmniBLEPumpManagerError.communication(PodCommsError.podFault(fault: fault)))
+                    return .failure(ApexBLEPumpManagerError.communication(PodCommsError.podFault(fault: fault)))
                 }
 
                 // Mock success
@@ -937,7 +937,7 @@ extension OmniBLEPumpManager {
             completion(result)
         }
         #else
-        let preError = setStateWithResult({ (state) -> OmniBLEPumpManagerError? in
+        let preError = setStateWithResult({ (state) -> ApexBLEPumpManagerError? in
             guard let podState = state.podState, podState.readyForCannulaInsertion else
             {
                 return .notReadyForCannulaInsertion
@@ -992,7 +992,7 @@ extension OmniBLEPumpManager {
         #endif
     }
 
-    public func checkCannulaInsertionFinished(completion: @escaping (OmniBLEPumpManagerError?) -> Void) {
+    public func checkCannulaInsertionFinished(completion: @escaping (ApexBLEPumpManagerError?) -> Void) {
         #if targetEnvironment(simulator)
         completion(nil)
         #else
@@ -1016,7 +1016,7 @@ extension OmniBLEPumpManager {
 
     public func getPodStatus(completion: ((_ result: PumpManagerResult<StatusResponse>) -> Void)? = nil) {
         guard state.hasActivePod else {
-            completion?(.failure(PumpManagerError.configuration(OmniBLEPumpManagerError.noPodPaired)))
+            completion?(.failure(PumpManagerError.configuration(ApexBLEPumpManagerError.noPodPaired)))
             return
         }
 
@@ -1069,10 +1069,10 @@ extension OmniBLEPumpManager {
         }
     }
 
-    public func setTime(completion: @escaping (OmniBLEPumpManagerError?) -> Void) {
+    public func setTime(completion: @escaping (ApexBLEPumpManagerError?) -> Void) {
 
         guard state.hasActivePod else {
-            completion(OmniBLEPumpManagerError.noPodPaired)
+            completion(ApexBLEPumpManagerError.noPodPaired)
             return
         }
 
@@ -1176,14 +1176,14 @@ extension OmniBLEPumpManager {
     // Called on the main thread.
     // The UI is responsible for serializing calls to this method;
     // it does not handle concurrent calls.
-    public func deactivatePod(completion: @escaping (OmniBLEPumpManagerError?) -> Void) {
+    public func deactivatePod(completion: @escaping (ApexBLEPumpManagerError?) -> Void) {
         #if targetEnvironment(simulator)
         DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + .seconds(2)) {
             completion(nil)
         }
         #else
         guard self.state.podState != nil else {
-            completion(OmniBLEPumpManagerError.noPodPaired)
+            completion(ApexBLEPumpManagerError.noPodPaired)
             return
         }
 
@@ -1194,10 +1194,10 @@ extension OmniBLEPumpManager {
                     try session.deactivatePod()
                     completion(nil)
                 } catch let error {
-                    completion(OmniBLEPumpManagerError.communication(error))
+                    completion(ApexBLEPumpManagerError.communication(error))
                 }
             case .failure(let error):
-                completion(OmniBLEPumpManagerError.communication(error))
+                completion(ApexBLEPumpManagerError.communication(error))
             }
         }
         #endif
@@ -1205,7 +1205,7 @@ extension OmniBLEPumpManager {
 
     public func playTestBeeps(completion: @escaping (Error?) -> Void) {
         guard self.hasActivePod else {
-            completion(OmniBLEPumpManagerError.noPodPaired)
+            completion(ApexBLEPumpManagerError.noPodPaired)
             return
         }
         guard state.podState?.unfinalizedBolus?.scheduledCertainty == .uncertain || state.podState?.unfinalizedBolus?.isFinished() != false else {
@@ -1240,7 +1240,7 @@ extension OmniBLEPumpManager {
     public func readPulseLog(completion: @escaping (Result<String, Error>) -> Void) {
         // use hasSetupPod to be able to read pulse log from a faulted Pod
         guard self.hasSetupPod else {
-            completion(.failure(OmniBLEPumpManagerError.noPodPaired))
+            completion(.failure(ApexBLEPumpManagerError.noPodPaired))
             return
         }
         guard state.podState?.isFaulted == true || state.podState?.unfinalizedBolus?.scheduledCertainty == .uncertain || state.podState?.unfinalizedBolus?.isFinished() != false else
@@ -1313,7 +1313,7 @@ extension OmniBLEPumpManager {
 }
 
 // MARK: - PumpManager
-extension OmniBLEPumpManager: PumpManager {
+extension ApexBLEPumpManager: PumpManager {
 
     public static var onboardingMaximumBasalScheduleEntryCount: Int {
         return Pod.maximumBasalScheduleEntryCount
@@ -1447,7 +1447,7 @@ extension OmniBLEPumpManager: PumpManager {
     // specifies a suspend duration implemented using an appropriate combination of suspended reminder and suspend time expired beeps.
     public func suspendDelivery(withSuspendReminders suspendReminder: TimeInterval? = nil, completion: @escaping (Error?) -> Void) {
         guard self.hasActivePod else {
-            completion(OmniBLEPumpManagerError.noPodPaired)
+            completion(ApexBLEPumpManagerError.noPodPaired)
             return
         }
 
