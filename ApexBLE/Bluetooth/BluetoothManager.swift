@@ -238,7 +238,7 @@ class BluetoothManager: NSObject {
     
     private func startScanning() {
         log.default("Start scanning")
-        manager.scanForPeripherals(withServices: [OmnipodServiceUUID.advertisement.cbUUID], options: nil)
+        manager.scanForPeripherals(withServices: [ApexpodServiceUUID.advertisement.cbUUID], options: nil)
     }
 
     private func stopScanning() {
@@ -313,7 +313,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
                 
                 if autoConnectIDs.contains(peripheral.identifier.uuidString) {
                     if peripheral.state == .connected {
-                        connectionDelegate?.omnipodPeripheralWasRestored(manager: device.manager)
+                        connectionDelegate?.apexpodPeripheralWasRestored(manager: device.manager)
                     }
                 } else if peripheral.state == .connected || peripheral.state == .connecting {
                     // For some reason iOS is maintaining a connection to a device that isn't in our list.
@@ -359,7 +359,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
         // Proxy connection events to peripheral manager
         for device in devices where device.manager.peripheral.identifier == peripheral.identifier {
             device.manager.centralManager(central, didConnect: peripheral)
-            connectionDelegate?.omnipodPeripheralDidConnect(manager: device.manager)
+            connectionDelegate?.apexpodPeripheralDidConnect(manager: device.manager)
 
             // Get an RSSI reading for logging
             peripheral.readRSSI()
@@ -375,7 +375,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
             device.manager.centralManager(central, didDisconnect: peripheral, error: error)
         }
 
-        connectionDelegate?.omnipodPeripheralDidDisconnect(peripheral: peripheral, error: error)
+        connectionDelegate?.apexpodPeripheralDidDisconnect(peripheral: peripheral, error: error)
 
         if autoConnectIDs.contains(peripheral.identifier.uuidString) {
             log.debug("Reconnecting disconnected autoconnect peripheral")
@@ -388,7 +388,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
 
         log.error("%{public}@: %{public}@", #function, String(describing: error))
 
-        connectionDelegate?.omnipodPeripheralDidFailToConnect(peripheral: peripheral, error: error)
+        connectionDelegate?.apexpodPeripheralDidFailToConnect(peripheral: peripheral, error: error)
 
         if autoConnectIDs.contains(peripheral.identifier.uuidString) {
             central.connect(peripheral, options: nil)

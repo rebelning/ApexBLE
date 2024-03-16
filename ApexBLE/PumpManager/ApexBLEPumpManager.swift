@@ -80,14 +80,11 @@ extension ApexBLEPumpManagerError: LocalizedError {
 
 public class ApexBLEPumpManager: DeviceManager {
 
-    public static let pluginIdentifier: String = "Apexpod-Dash" // "Omnipod-Dash"use a single token to make parsing log files easier
+    public static let pluginIdentifier: String = "Apexpod-Dash" // use a single token to make parsing log files easier
 
     public let localizedTitle = LocalizedString("Apexpod DASH", comment: "Generic title of the ApexBLE pump manager")
-    
-//    public let localizedTitle = LocalizedString("Omnipod DASH", comment: "Generic title of the OmniBLE pump manager")
 
     static let podAlarmNotificationIdentifier = "ApexBLE:\(LoopNotificationCategory.pumpFault.rawValue)"
-//    static let podAlarmNotificationIdentifier = "OmniBLE:\(LoopNotificationCategory.pumpFault.rawValue)"
 
     public init(state: ApexBLEPumpManagerState, dateGenerator: @escaping () -> Date = Date.init) {
         self.lockedState = Locked(state)
@@ -260,21 +257,21 @@ public class ApexBLEPumpManager: DeviceManager {
         podComms.manager?.peripheral.state == .connected
     }
 
-    func omnipodPeripheralDidConnect(manager: PeripheralManager) {
+    func apexpodPeripheralDidConnect(manager: PeripheralManager) {
         logDeviceCommunication("Pod connected \(manager.peripheral.identifier.uuidString)", type: .connection)
         notifyPodConnectionStateDidChange(isConnected: true)
     }
 
-    func omnipodPeripheralDidDisconnect(peripheral: CBPeripheral, error: Error?) {
+    func apexpodPeripheralDidDisconnect(peripheral: CBPeripheral, error: Error?) {
         logDeviceCommunication("Pod disconnected \(peripheral.identifier.uuidString) \(String(describing: error))", type: .connection)
         notifyPodConnectionStateDidChange(isConnected: false)
     }
 
-    func omnipodPeripheralDidFailToConnect(peripheral: CBPeripheral, error: Error?) {
+    func apexpodPeripheralDidFailToConnect(peripheral: CBPeripheral, error: Error?) {
         logDeviceCommunication("Pod failed to connect \(peripheral.identifier.uuidString), \(String(describing: error))", type: .connection)
     }
 
-    func omnipodPeripheralWasRestored(manager: PeripheralManager) {
+    func apexpodPeripheralWasRestored(manager: PeripheralManager) {
         logDeviceCommunication("Pod peripheral was restored \(manager.peripheral.identifier.uuidString))", type: .connection)
         notifyPodConnectionStateDidChange(isConnected: manager.peripheral.state == .connected)
     }
@@ -295,7 +292,7 @@ public class ApexBLEPumpManager: DeviceManager {
 
     public var debugDescription: String {
         let lines = [
-            "## ApexBLEPumpManager",
+            "## APexBLEPumpManager",
             "podComms: \(String(reflecting: podComms))",
             "provideHeartbeat: \(provideHeartbeat)",
             "connected: \(isConnected)",
@@ -1030,7 +1027,7 @@ extension ApexBLEPumpManager {
                     })
                     completion?(.success(status))
                 case .failure(let error):
-                    self.evaluateStatus() 
+                    self.evaluateStatus()
                     throw error
                 }
                 self.issueHeartbeatIfNeeded()

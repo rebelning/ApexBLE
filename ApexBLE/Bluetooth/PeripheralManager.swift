@@ -515,19 +515,19 @@ extension PeripheralManager {
 
 extension CBPeripheral {
     func getCommandCharacteristic() -> CBCharacteristic? {
-        guard let service = services?.itemWithUUID(OmnipodServiceUUID.service.cbUUID) else {
+        guard let service = services?.itemWithUUID(ApexpodServiceUUID.service.cbUUID) else {
             return nil
         }
 
-        return service.characteristics?.itemWithUUID(OmnipodCharacteristicUUID.command.cbUUID)
+        return service.characteristics?.itemWithUUID(ApexpodCharacteristicUUID.command.cbUUID)
     }
 
     func getDataCharacteristic() -> CBCharacteristic? {
-        guard let service = services?.itemWithUUID(OmnipodServiceUUID.service.cbUUID) else {
+        guard let service = services?.itemWithUUID(ApexpodServiceUUID.service.cbUUID) else {
             return nil
         }
 
-        return service.characteristics?.itemWithUUID(OmnipodCharacteristicUUID.data.cbUUID)
+        return service.characteristics?.itemWithUUID(ApexpodCharacteristicUUID.data.cbUUID)
     }
 }
 

@@ -94,7 +94,7 @@ public class PodComms: CustomDebugStringConvertible {
         podStateLock.unlock()
     }
 
-    public func connectToNewPod(_ completion: @escaping (Result<OmniBLE, Error>) -> Void) {
+    public func connectToNewPod(_ completion: @escaping (Result<ApexBLE, Error>) -> Void) {
         let discoveryStartTime = Date()
 
         bluetoothManager.discoverPods { error in
@@ -464,31 +464,31 @@ public class PodComms: CustomDebugStringConvertible {
 // MARK: - ApexBLEConnectionDelegate
 
 extension PodComms: ApexBLEConnectionDelegate {
-    func omnipodPeripheralWasRestored(manager: PeripheralManager) {
+    func apexpodPeripheralWasRestored(manager: PeripheralManager) {
         if let podState = podState, manager.peripheral.identifier.uuidString == podState.bleIdentifier {
             self.manager = manager
-            self.delegate?.omnipodPeripheralWasRestored(manager: manager)
+            self.delegate?.apexpodPeripheralWasRestored(manager: manager)
         }
     }
 
-    func omnipodPeripheralDidConnect(manager: PeripheralManager) {
+    func apexpodPeripheralDidConnect(manager: PeripheralManager) {
         if let podState = podState, manager.peripheral.identifier.uuidString == podState.bleIdentifier {
             needsSessionEstablishment = true
             self.manager = manager
-            self.delegate?.omnipodPeripheralDidConnect(manager: manager)
+            self.delegate?.apexpodPeripheralDidConnect(manager: manager)
         }
     }
 
-    func omnipodPeripheralDidDisconnect(peripheral: CBPeripheral, error: Error?) {
+    func apexpodPeripheralDidDisconnect(peripheral: CBPeripheral, error: Error?) {
         if let podState = podState, peripheral.identifier.uuidString == podState.bleIdentifier {
-            self.delegate?.omnipodPeripheralDidDisconnect(peripheral: peripheral, error: error)
+            self.delegate?.apexpodPeripheralDidDisconnect(peripheral: peripheral, error: error)
             log.debug("omnipodPeripheralDidDisconnect... will auto-reconnect")
         }
     }
 
-    func omnipodPeripheralDidFailToConnect(peripheral: CBPeripheral, error: Error?) {
+    func apexpodPeripheralDidFailToConnect(peripheral: CBPeripheral, error: Error?) {
         if let podState = podState, peripheral.identifier.uuidString == podState.bleIdentifier {
-            self.delegate?.omnipodPeripheralDidFailToConnect(peripheral: peripheral, error: error)
+            self.delegate?.apexpodPeripheralDidFailToConnect(peripheral: peripheral, error: error)
             log.debug("omnipodPeripheralDidDisconnect... will auto-reconnect")
         }
     }
