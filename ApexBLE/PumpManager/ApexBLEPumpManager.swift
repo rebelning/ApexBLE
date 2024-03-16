@@ -287,7 +287,7 @@ public class ApexBLEPumpManager: DeviceManager {
 
     private let pumpDelegate = WeakSynchronizedDelegate<PumpManagerDelegate>()
 
-    public let log = OSLog(category: "OmniBLEPumpManager")
+    public let log = OSLog(category: "ApexBLEPumpManager")
 
     private var lastLoopRecommendation: Date?
 
@@ -295,7 +295,7 @@ public class ApexBLEPumpManager: DeviceManager {
 
     public var debugDescription: String {
         let lines = [
-            "## OmniBLEPumpManager",
+            "## ApexBLEPumpManager",
             "podComms: \(String(reflecting: podComms))",
             "provideHeartbeat: \(provideHeartbeat)",
             "connected: \(isConnected)",
@@ -308,7 +308,7 @@ public class ApexBLEPumpManager: DeviceManager {
     }
 }
 
-extension OmniBLEPumpManager {
+extension ApexBLEPumpManager {
     // MARK: - PodStateObserver
 
     public func addPodStateObserver(_ observer: PodStateObserver, queue: DispatchQueue) {
@@ -350,7 +350,7 @@ extension OmniBLEPumpManager {
                 model: "Dash",
                 hardwareVersion: nil,
                 firmwareVersion: nil,
-                softwareVersion: String(OmniBLEVersionNumber),
+                softwareVersion: String(ApexBLEVersionNumber),
                 localIdentifier: nil,
                 udiDeviceIdentifier: nil
             )
@@ -803,7 +803,7 @@ extension OmniBLEPumpManager {
 
     // MARK: - Pairing
 
-    func connectToNewPod(completion: @escaping (Result<OmniBLE, Error>) -> Void) {
+    func connectToNewPod(completion: @escaping (Result<ApexBLE, Error>) -> Void) {
         podComms.connectToNewPod { result in
             if case .success = result {
                 self.pumpDelegate.notify { (delegate) in
@@ -879,7 +879,7 @@ extension OmniBLEPumpManager {
             self.log.default("Pairing pod before priming")
 
             guard let insulinType = insulinType else {
-                completion(.failure(.configuration(OmniBLEPumpManagerError.insulinTypeNotConfigured)))
+                completion(.failure(.configuration(ApexBLEPumpManagerError.insulinTypeNotConfigured)))
                 return
             }
 
@@ -1274,7 +1274,7 @@ extension OmniBLEPumpManager {
         }
     }
 
-    public func setConfirmationBeeps(newPreference: BeepPreference, completion: @escaping (OmniBLEPumpManagerError?) -> Void) {
+    public func setConfirmationBeeps(newPreference: BeepPreference, completion: @escaping (ApexBLEPumpManagerError?) -> Void) {
         self.log.default("Set Confirmation Beeps to %s", String(describing: newPreference))
         guard self.hasActivePod else {
             self.setState { state in
@@ -1492,7 +1492,7 @@ extension ApexBLEPumpManager: PumpManager {
 
     public func resumeDelivery(completion: @escaping (Error?) -> Void) {
         guard self.hasActivePod else {
-            completion(OmniBLEPumpManagerError.noPodPaired)
+            completion(ApexBLEPumpManagerError.noPodPaired)
             return
         }
 
@@ -1577,7 +1577,7 @@ extension ApexBLEPumpManager: PumpManager {
 
     public func enactBolus(units: Double, activationType: BolusActivationType, completion: @escaping (PumpManagerError?) -> Void) {
         guard self.hasActivePod else {
-            completion(.configuration(OmniBLEPumpManagerError.noPodPaired))
+            completion(.configuration(ApexBLEPumpManagerError.noPodPaired))
             return
         }
 
@@ -1639,7 +1639,7 @@ extension ApexBLEPumpManager: PumpManager {
 
     public func cancelBolus(completion: @escaping (PumpManagerResult<DoseEntry?>) -> Void) {
         guard self.hasActivePod else {
-            completion(.failure(.deviceState(OmniBLEPumpManagerError.noPodPaired)))
+            completion(.failure(.deviceState(ApexBLEPumpManagerError.noPodPaired)))
             return
         }
 
@@ -1708,7 +1708,7 @@ extension ApexBLEPumpManager: PumpManager {
     public func runTemporaryBasalProgram(unitsPerHour: Double, for duration: TimeInterval, automatic: Bool, completion: @escaping (PumpManagerError?) -> Void) {
 
         guard self.hasActivePod, let podState = self.state.podState else {
-            completion(.configuration(OmniBLEPumpManagerError.noPodPaired))
+            completion(.configuration(ApexBLEPumpManagerError.noPodPaired))
             return
         }
 
@@ -1720,7 +1720,7 @@ extension ApexBLEPumpManager: PumpManager {
 
         // Legal duration values are [virtual] zero (to cancel current temp basal) or between 30 min and 12 hours
         guard duration < .ulpOfOne || (duration >= .minutes(30) && duration <= .hours(12)) else {
-            completion(.deviceState(OmniBLEPumpManagerError.invalidSetting))
+            completion(.deviceState(ApexBLEPumpManagerError.invalidSetting))
             return
         }
 
@@ -1861,7 +1861,7 @@ extension ApexBLEPumpManager: PumpManager {
                 state.maximumTempBasalRate = rate
                 completion(.success(deliveryLimits))
             } else {
-                completion(.failure(OmniBLEPumpManagerError.invalidSetting))
+                completion(.failure(ApexBLEPumpManagerError.invalidSetting))
             }
         }
     }
@@ -1883,10 +1883,10 @@ extension ApexBLEPumpManager: PumpManager {
         }
     }
 
-    public func updateExpirationReminder(_ intervalBeforeExpiration: TimeInterval?, completion: @escaping (OmniBLEPumpManagerError?) -> Void) {
+    public func updateExpirationReminder(_ intervalBeforeExpiration: TimeInterval?, completion: @escaping (ApexBLEPumpManagerError?) -> Void) {
 
         guard self.hasActivePod, let podState = state.podState, let expiresAt = podState.expiresAt else {
-            completion(OmniBLEPumpManagerError.noPodPaired)
+            completion(ApexBLEPumpManagerError.noPodPaired)
             return
         }
 
@@ -1947,9 +1947,9 @@ extension ApexBLEPumpManager: PumpManager {
         return expiration.addingTimeInterval(-.hours(round(offset.hours)))
     }
 
-    public func updateLowReservoirReminder(_ value: Int, completion: @escaping (OmniBLEPumpManagerError?) -> Void) {
+    public func updateLowReservoirReminder(_ value: Int, completion: @escaping (ApexBLEPumpManagerError?) -> Void) {
         guard self.hasActivePod else {
-            completion(OmniBLEPumpManagerError.noPodPaired)
+            completion(ApexBLEPumpManagerError.noPodPaired)
             return
         }
 
@@ -2101,7 +2101,7 @@ extension ApexBLEPumpManager: PumpManager {
             let content = Alert.Content(title: fault.faultEventCode.notificationTitle,
                                         body: fault.faultEventCode.notificationBody,
                                         acknowledgeActionButtonLabel: LocalizedString("OK", comment: "Alert acknowledgment OK button"))
-            delegate?.issueAlert(Alert(identifier: Alert.Identifier(managerIdentifier: OmniBLEPumpManager.podAlarmNotificationIdentifier,
+            delegate?.issueAlert(Alert(identifier: Alert.Identifier(managerIdentifier: ApexBLEPumpManager.podAlarmNotificationIdentifier,
                                                                     alertIdentifier: fault.faultEventCode.description),
                                        foregroundContent: content, backgroundContent: content,
                                        trigger: .immediate))
@@ -2155,7 +2155,7 @@ extension ApexBLEPumpManager: PumpManager {
     }
 }
 
-extension OmniBLEPumpManager: MessageLogger {
+extension ApexBLEPumpManager: MessageLogger {
     func didSend(_ message: Data) {
         log.default("didSend: %{public}@", message.hexadecimalString)
         self.logDeviceCommunication(message.hexadecimalString, type: .send)
@@ -2171,7 +2171,7 @@ extension OmniBLEPumpManager: MessageLogger {
     }
 }
 
-extension OmniBLEPumpManager: PodCommsDelegate {
+extension ApexBLEPumpManager: PodCommsDelegate {
 
     func podCommsDidEstablishSession(_ podComms: PodComms) {
 
@@ -2234,7 +2234,7 @@ extension OmniBLEPumpManager: PodCommsDelegate {
     }
 }
 
-extension OmniBLEPumpManager: AlertSoundVendor {
+extension ApexBLEPumpManager: AlertSoundVendor {
     public func getSoundBaseURL() -> URL? {
         return nil
     }
@@ -2245,10 +2245,10 @@ extension OmniBLEPumpManager: AlertSoundVendor {
 }
 
 // MARK: - AlertResponder implementation
-extension OmniBLEPumpManager {
+extension ApexBLEPumpManager {
     public func acknowledgeAlert(alertIdentifier: Alert.AlertIdentifier, completion: @escaping (Error?) -> Void) {
         guard self.hasActivePod else {
-            completion(OmniBLEPumpManagerError.noPodPaired)
+            completion(ApexBLEPumpManagerError.noPodPaired)
             return
         }
 

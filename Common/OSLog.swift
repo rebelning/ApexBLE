@@ -10,7 +10,8 @@ import os.log
 
 extension OSLog {
     convenience init(category: String) {
-        self.init(subsystem: "com.randallknutson.OmniBLE", category: category)
+//        self.init(subsystem: "com.randallknutson.OmniBLE", category: category)
+        self.init(subsystem: "com.randallknutson.ApexBLE", category: category)
     }
 
     func debug(_ message: StaticString, _ args: CVarArg...) {

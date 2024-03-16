@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/terminal/usr/local/src/APS/IOSAPS/ApexBLE/ApexBLE.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

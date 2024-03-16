@@ -14,7 +14,7 @@ public class ApexBLE {
     var manager: PeripheralManager
     var advertisement: PodAdvertisement?
 
-    private let log = OSLog(category: "OmniBLE")
+    private let log = OSLog(category: "ApexBLE")
 
     init(peripheralManager: PeripheralManager, advertisement: PodAdvertisement?) {
         self.manager = peripheralManager        
@@ -25,6 +25,6 @@ public class ApexBLE {
 
 extension ApexBLE: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "OmniBLE - advertisement: \(String(describing: advertisement))"
+        return "ApexBLE - advertisement: \(String(describing: advertisement))"
     }
 }

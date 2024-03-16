@@ -132,13 +132,13 @@ struct InsertCannulaView: View {
 }
 
 class MockCannulaInserter: CannulaInserter {
-    func insertCannula(completion: @escaping (Result<TimeInterval,OmniBLEPumpManagerError>) -> Void) {
+    func insertCannula(completion: @escaping (Result<TimeInterval,ApexBLEPumpManagerError>) -> Void) {
         let mockDelay = TimeInterval(seconds: 3)
-        let result :Result<TimeInterval, OmniBLEPumpManagerError> = .success(mockDelay)
+        let result :Result<TimeInterval, ApexBLEPumpManagerError> = .success(mockDelay)
         completion(result)
     }
     
-    func checkCannulaInsertionFinished(completion: @escaping (OmniBLEPumpManagerError?) -> Void) {
+    func checkCannulaInsertionFinished(completion: @escaping (ApexBLEPumpManagerError?) -> Void) {
         completion(nil)
     }
     

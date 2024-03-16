@@ -99,7 +99,7 @@ class BluetoothManager: NSObject {
     private var manager: CBCentralManager! = nil
     
     /// Isolated to `managerQueue`
-    private var devices: [OmniBLE] = []
+    private var devices: [ApexBLE] = []
     
     /// Isolated to `managerQueue`
     private var discoveryModeEnabled: Bool = false
@@ -130,10 +130,10 @@ class BluetoothManager: NSObject {
     }
     
     @discardableResult
-    private func addPeripheral(_ peripheral: CBPeripheral, podAdvertisement: PodAdvertisement?) -> OmniBLE {
+    private func addPeripheral(_ peripheral: CBPeripheral, podAdvertisement: PodAdvertisement?) -> ApexBLE {
         dispatchPrecondition(condition: .onQueue(managerQueue))
 
-        var device: OmniBLE! = devices.first(where: { $0.manager.peripheral.identifier == peripheral.identifier })
+        var device: ApexBLE! = devices.first(where: { $0.manager.peripheral.identifier == peripheral.identifier })
 
         if let device = device {
             log.default("Matched peripheral %{public}@ to existing device: %{public}@", peripheral, String(describing: device))
@@ -142,7 +142,7 @@ class BluetoothManager: NSObject {
                 device.advertisement = podAdvertisement
             }
         } else {
-            device = OmniBLE(peripheralManager: PeripheralManager(peripheral: peripheral, configuration: .omnipod, centralManager: manager), advertisement: podAdvertisement)
+            device = ApexBLE(peripheralManager: PeripheralManager(peripheral: peripheral, configuration: .omnipod, centralManager: manager), advertisement: podAdvertisement)
             devices.append(device)
             log.info("Created device")
         }
@@ -248,8 +248,8 @@ class BluetoothManager: NSObject {
 
     // MARK: - Accessors
     
-    public func getConnectedDevices() -> [OmniBLE] {
-        var connected: [OmniBLE] = []
+    public func getConnectedDevices() -> [ApexBLE] {
+        var connected: [ApexBLE] = []
         managerQueue.sync {
             connected = self.devices.filter { $0.manager.peripheral.state == .connected }
         }
@@ -305,7 +305,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
 
     func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
-        log.info("OmniBLE %{public}@: %{public}@", #function, dict)
+        log.info("ApexBLE %{public}@: %{public}@", #function, dict)
 
         if let peripherals = dict[CBCentralManagerRestoredStatePeripheralsKey] as? [CBPeripheral] {
             for peripheral in peripherals {

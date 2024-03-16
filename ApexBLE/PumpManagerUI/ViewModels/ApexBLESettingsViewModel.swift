@@ -216,9 +216,9 @@ class ApexBLESettingsViewModel: ObservableObject {
     
     var navigateTo: ((DashUIScreen) -> Void)?
     
-    private let pumpManager: OmniBLEPumpManager
+    private let pumpManager: ApexBLEPumpManager
     
-    init(pumpManager: OmniBLEPumpManager) {
+    init(pumpManager: ApexBLEPumpManager) {
         self.pumpManager = pumpManager
         
         lifeState = pumpManager.lifeState
@@ -458,7 +458,7 @@ class ApexBLESettingsViewModel: ObservableObject {
     }
 }
 
-extension OmniBLESettingsViewModel: PodStateObserver {
+extension ApexBLESettingsViewModel: PodStateObserver {
     func podStateDidUpdate(_ state: PodState?) {
         lifeState = self.pumpManager.lifeState
         basalDeliveryRate = self.pumpManager.basalDeliveryRate
@@ -479,7 +479,7 @@ extension OmniBLESettingsViewModel: PodStateObserver {
     }
 }
 
-extension OmniBLESettingsViewModel: PumpManagerStatusObserver {
+extension ApexBLESettingsViewModel: PumpManagerStatusObserver {
     func pumpManager(_ pumpManager: PumpManager, didUpdate status: PumpManagerStatus, oldStatus: PumpManagerStatus) {
         basalDeliveryState = self.pumpManager.status.basalDeliveryState
     }
@@ -488,7 +488,7 @@ extension OmniBLESettingsViewModel: PumpManagerStatusObserver {
 
 
 
-extension OmniBLEPumpManager {
+extension ApexBLEPumpManager {
     var lifeState: PodLifeState {
         switch podCommState {
         case .fault(let status):

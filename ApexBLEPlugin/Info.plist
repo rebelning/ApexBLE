@@ -21,10 +21,10 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2022 LoopKit Authors. All rights reserved.</string>
 	<key>com.loopkit.Loop.PumpManagerDisplayName</key>
-	<string>Omnipod DASH</string>
+	<string>Apexpod DASH</string>
 	<key>com.loopkit.Loop.PumpManagerIdentifier</key>
-	<string>Omnipod-Dash</string>
+	<string>Apexpod-Dash</string>
 	<key>NSPrincipalClass</key>
-	<string>OmniBLEPlugin.OmnipodPlugin</string>
+	<string>ApexBLEPlugin.ApexpodPlugin</string>
 </dict>
 </plist>

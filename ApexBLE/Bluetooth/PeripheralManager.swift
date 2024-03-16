@@ -53,7 +53,7 @@ class PeripheralManager: NSObject {
 
     private let sessionQueue: OperationQueue = {
         let queue = OperationQueue()
-        queue.name = "com.OmniBLE.OmnipodDevice.sessionQueue"
+        queue.name = "com.ApexBLE.ApexpodDevice.sessionQueue"
         queue.maxConcurrentOperationCount = 1
 
         return queue
