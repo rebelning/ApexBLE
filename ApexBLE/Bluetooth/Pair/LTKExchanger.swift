@@ -23,7 +23,7 @@ class LTKExchanger {
     private let manager: PeripheralManager
     private let ids: Ids
     private let podAddress = Ids.notActivated()
-    private let keyExchange = try! KeyExchange(X25519KeyGenerator(), OmniRandomByteGenerator())
+    private let keyExchange = try! KeyExchange(X25519KeyGenerator(), ApexRandomByteGenerator())
     private var seq: UInt8 = 1
     
     private let log = OSLog(category: "LTKExchanger")

@@ -142,7 +142,7 @@ class BluetoothManager: NSObject {
                 device.advertisement = podAdvertisement
             }
         } else {
-            device = ApexBLE(peripheralManager: PeripheralManager(peripheral: peripheral, configuration: .omnipod, centralManager: manager), advertisement: podAdvertisement)
+            device = ApexBLE(peripheralManager: PeripheralManager(peripheral: peripheral, configuration: .apexpod, centralManager: manager), advertisement: podAdvertisement)
             devices.append(device)
             log.info("Created device")
         }

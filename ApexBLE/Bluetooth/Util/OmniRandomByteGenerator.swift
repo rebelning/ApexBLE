@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class OmniRandomByteGenerator: RandomByteGenerator {
+class ApexRandomByteGenerator: RandomByteGenerator {
     func nextBytes(length: Int) -> Data {
         var bytes = [Int8](repeating: 0, count: length)
         let status = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)

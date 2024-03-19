@@ -34,8 +34,8 @@ struct NotificationSettingsView: View {
     var body: some View {
         RoundedCardScrollView {
             RoundedCard(
-                title: LocalizedString("Omnipod Reminders", comment: "Title for omnipod reminders section"),
-                footer: LocalizedString("The app configures a reminder on the pod to notify you in advance of Pod expiration. Set the number of hours advance notice you would like to configure when pairing a new Pod.", comment: "Footer text for omnipod reminders section")
+                title: LocalizedString("Apexpod Reminders", comment: "Title for Apexpod reminders section"),
+                footer: LocalizedString("The app configures a reminder on the pod to notify you in advance of Pod expiration. Set the number of hours advance notice you would like to configure when pairing a new Pod.", comment: "Footer text for apexpod reminders section")
             ) {
                 ExpirationReminderPickerView(expirationReminderDefault: $expirationReminderDefault)
             }

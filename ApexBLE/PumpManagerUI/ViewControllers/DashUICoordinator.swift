@@ -326,7 +326,7 @@ class DashUICoordinator: UINavigationController, PumpManagerOnboarding, Completi
             self.pumpManager = ApexBLEPumpManager(state: pumpManagerState)
         } else {
             guard let pumpManager = pumpManager else {
-                fatalError("Unable to create Omnipod PumpManager")
+                fatalError("Unable to create Apexpod PumpManager")
             }
             self.pumpManager = pumpManager
         }

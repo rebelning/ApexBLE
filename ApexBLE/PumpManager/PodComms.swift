@@ -257,13 +257,13 @@ public class PodComms: CustomDebugStringConvertible {
             log.info("msgSequenceNumber: %@", String(keys.msgSequenceNumber))
             // log.info("NoncePrefix: %@", keys.nonce.prefix.hexadecimalString)
 
-            let omnipodMessageNumber = self.podState?.messageTransportState.messageNumber ?? 0
+            let apexpodMessageNumber = self.podState?.messageTransportState.messageNumber ?? 0
             let messageTransportState = MessageTransportState(
                 ck: keys.ck,
                 noncePrefix: keys.nonce.prefix,
                 eapSeq: eapSeq,
                 msgSeq: keys.msgSequenceNumber,
-                messageNumber: omnipodMessageNumber
+                messageNumber: apexpodMessageNumber
             )
 
             if self.podState != nil {
@@ -482,14 +482,14 @@ extension PodComms: ApexBLEConnectionDelegate {
     func apexpodPeripheralDidDisconnect(peripheral: CBPeripheral, error: Error?) {
         if let podState = podState, peripheral.identifier.uuidString == podState.bleIdentifier {
             self.delegate?.apexpodPeripheralDidDisconnect(peripheral: peripheral, error: error)
-            log.debug("omnipodPeripheralDidDisconnect... will auto-reconnect")
+            log.debug("apexpodPeripheralDidDisconnect... will auto-reconnect")
         }
     }
 
     func apexpodPeripheralDidFailToConnect(peripheral: CBPeripheral, error: Error?) {
         if let podState = podState, peripheral.identifier.uuidString == podState.bleIdentifier {
             self.delegate?.apexpodPeripheralDidFailToConnect(peripheral: peripheral, error: error)
-            log.debug("omnipodPeripheralDidDisconnect... will auto-reconnect")
+            log.debug("apexpodPeripheralDidDisconnect... will auto-reconnect")
         }
     }
 

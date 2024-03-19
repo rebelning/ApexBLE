@@ -490,9 +490,9 @@ struct ApexBLESettingsView: View  {
     }
     
     var removePumpManagerActionSheet: ActionSheet {
-        ActionSheet(title: FrameworkLocalText("Remove Pump", comment: "Title for Omnipod DASH PumpManager deletion action sheet."), message: FrameworkLocalText("Are you sure you want to stop using Omnipod DASH?", comment: "Message for Omnipod DASH PumpManager deletion action sheet"), buttons: [
-            .destructive(FrameworkLocalText("Delete Omnipod DASH", comment: "Button text to confirm Omnipod DASH PumpManager deletion")) {
-                self.viewModel.stopUsingOmnipodDashTapped()
+        ActionSheet(title: FrameworkLocalText("Remove Pump", comment: "Title for Apexpod DASH PumpManager deletion action sheet."), message: FrameworkLocalText("Are you sure you want to stop using Apexpod DASH?", comment: "Message for Apexpod DASH PumpManager deletion action sheet"), buttons: [
+            .destructive(FrameworkLocalText("Delete Apexpod DASH", comment: "Button text to confirm Apexpod DASH PumpManager deletion")) {
+                self.viewModel.stopUsingApexpodDashTapped()
             },
             .cancel()
         ])

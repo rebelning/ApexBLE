@@ -93,8 +93,8 @@ struct PodSetupView: View {
     }
     
     private var skipOnboardingAlert: Alert {
-        Alert(title: Text("Skip Omnipod Onboarding?"),
-              message: Text("Are you sure you want to skip Omnipod Onboarding?"),
+        Alert(title: Text("Skip Apexpod Onboarding?"),
+              message: Text("Are you sure you want to skip Apexpod Onboarding?"),
               primaryButton: .cancel(),
               secondaryButton: .destructive(Text("Yes"), action: skipOnboarding))
     }

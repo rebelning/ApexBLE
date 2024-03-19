@@ -261,7 +261,7 @@ class ApexBLESettingsViewModel: ObservableObject {
         self.didFinish?()
     }
     
-    func stopUsingOmnipodDashTapped() {
+    func stopUsingApexpodDashTapped() {
         self.pumpManager.notifyDelegateOfDeactivation {
             DispatchQueue.main.async {
                 self.didFinish?()

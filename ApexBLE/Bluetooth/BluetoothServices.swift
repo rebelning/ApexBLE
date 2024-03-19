@@ -37,7 +37,7 @@ enum ApexpodCharacteristicUUID: String, CBUUIDRawValue {
 }
 
 extension PeripheralManager.Configuration {
-    static var omnipod: PeripheralManager.Configuration {
+    static var apexpod: PeripheralManager.Configuration {
         return PeripheralManager.Configuration(
             serviceCharacteristics: [
                 ApexpodServiceUUID.service.cbUUID: [
