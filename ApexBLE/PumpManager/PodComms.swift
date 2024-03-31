@@ -350,7 +350,7 @@ public class PodComms: CustomDebugStringConvertible {
             self.podState?.setupProgress = .podPaired
         }
     }
-
+//
     func pairAndSetupPod(
         timeZone: TimeZone,
         insulinType: InsulinType,

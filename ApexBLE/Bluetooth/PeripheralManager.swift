@@ -171,7 +171,7 @@ extension PeripheralManager {
 
     private func applyConfiguration(discoveryTimeout: TimeInterval = 2) throws {
         try discoverServices(configuration.serviceCharacteristics.keys.map { $0 }, timeout: discoveryTimeout)
-
+        
         for service in peripheral.services ?? [] {
             log.default("Discovered service: %{public}@", service)
             guard let characteristics = configuration.serviceCharacteristics[service.uuid] else {
@@ -182,11 +182,16 @@ extension PeripheralManager {
         }
 
         for (serviceUUID, characteristicUUIDs) in configuration.notifyingCharacteristics {
+            log.debug("serviceUUID=%@", serviceUUID.uuidString)
+//            log.debug("peripheral.services?.count=%d",  peripheral.services?.count)
+//            log.debug("peripheral.services?.count=%@",  peripheral.services![0].uuid.uuidString)
             guard let service = peripheral.services?.itemWithUUID(serviceUUID) else {
+                log.debug("unknownCharacteristic..")
                 throw PeripheralManagerError.unknownCharacteristic
             }
 
             for characteristicUUID in characteristicUUIDs {
+                log.debug("characteristicUUID=%@", characteristicUUID.uuidString)
                 guard let characteristic = service.characteristics?.itemWithUUID(characteristicUUID) else {
                     throw PeripheralManagerError.unknownCharacteristic
                 }
@@ -208,7 +213,11 @@ extension PeripheralManager {
     func runCommand(timeout: TimeInterval, command: () -> Void) throws {
         // Prelude
         dispatchPrecondition(condition: .onQueue(queue))
-        guard central?.state == .poweredOn && peripheral.state == .connected else {
+        self.log.info("central?.state= %@", String(describing: central?.state.rawValue))
+        self.log.info("peripheral.state == .disconnected= %@", String(peripheral.state == .disconnected))
+        self.log.info("peripheral.state = %@", String(peripheral.state.rawValue))
+        guard central?.state == .poweredOn && peripheral.state == .connected else {// .connected
+           
             self.log.info("runCommand guard failed - bluetooth not running or peripheral not connected: peripheral %@", peripheral)
             throw PeripheralManagerError.notReady
         }
@@ -259,14 +268,15 @@ extension PeripheralManager {
 
     func discoverServices(_ serviceUUIDs: [CBUUID], timeout: TimeInterval) throws {
         let servicesToDiscover = peripheral.servicesToDiscover(from: serviceUUIDs)
-
+        self.log.info("servicesToDiscover-count=%d",servicesToDiscover.count)
+        self.log.info("servicesToDiscover-description=%@",servicesToDiscover.description)
         guard servicesToDiscover.count > 0 else {
             return
         }
 
         try runCommand(timeout: timeout) {
             addCondition(.discoverServices)
-            
+            self.log.info("runCommand-description=%@",serviceUUIDs.description)
             peripheral.discoverServices(serviceUUIDs)
         }
     }
@@ -514,21 +524,38 @@ extension PeripheralManager {
 }
 
 extension CBPeripheral {
-    func getCommandCharacteristic() -> CBCharacteristic? {
-        guard let service = services?.itemWithUUID(ApexpodServiceUUID.service.cbUUID) else {
-            return nil
-        }
+//    func getCommandCharacteristic() -> CBCharacteristic? {
+//        guard let service = services?.itemWithUUID(ApexpodServiceUUID.service.cbUUID) else {
+//            return nil
+//        }
+//        print("getCommandCharacteristic session %{public}@", service.uuid.uuidString)
+//        return service.characteristics?.itemWithUUID(ApexpodCharacteristicUUID.command.cbUUID)
+//    }
+//
+//    func getDataCharacteristic() -> CBCharacteristic? {
+//        guard let service = services?.itemWithUUID(ApexpodServiceUUID.service.cbUUID) else {
+//            return nil
+//        }
+//        print("getDataCharacteristic session %{public}@", service.uuid.uuidString)
+//        return service.characteristics?.itemWithUUID(ApexpodCharacteristicUUID.data.cbUUID)
+//    }
+    // 从服务 FFE5 获取命令特征 FFE9
+      func getCommandCharacteristic() -> CBCharacteristic? {
+          guard let service = services?.first(where: { $0.uuid == CBUUID(string: "FFE5") }) else {
+              return nil
+          }
+          print("getCommandCharacteristic session %{public}@", service.uuid.uuidString)
+          return service.characteristics?.first(where: { $0.uuid == CBUUID(string: "FFE9") })
+      }
 
-        return service.characteristics?.itemWithUUID(ApexpodCharacteristicUUID.command.cbUUID)
-    }
-
-    func getDataCharacteristic() -> CBCharacteristic? {
-        guard let service = services?.itemWithUUID(ApexpodServiceUUID.service.cbUUID) else {
-            return nil
-        }
-
-        return service.characteristics?.itemWithUUID(ApexpodCharacteristicUUID.data.cbUUID)
-    }
+      // 从服务 FFE0 获取数据特征 FFE4
+      func getDataCharacteristic() -> CBCharacteristic? {
+          guard let service = services?.first(where: { $0.uuid == CBUUID(string: "FFE0") }) else {
+              return nil
+          }
+          print("getDataCharacteristic session %{public}@", service.uuid.uuidString)
+          return service.characteristics?.first(where: { $0.uuid == CBUUID(string: "FFE4") })
+      }
 }
 
 // MARK: - Command session management

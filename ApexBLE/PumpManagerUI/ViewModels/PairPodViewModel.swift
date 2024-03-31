@@ -191,6 +191,7 @@ class PairPodViewModel: ObservableObject, Identifiable {
                 case .failure(let error):
                     let pairingError = DashPairingError.pumpManagerError(error)
                     self.state = .error(pairingError)
+                    
                 case .success(let duration):
                     
                     if duration > 0 {

@@ -27,13 +27,19 @@ enum PodCommand: UInt8 {
 }
 
 enum ApexpodServiceUUID: String, CBUUIDRawValue {
-    case advertisement = "00004024-0000-1000-8000-00805f9b34fb"
-    case service = "1A7E4024-E3ED-4464-8B7E-751E03D0DC5F"
+    case advertisement = "0000ffe0-0000-1000-8000-00805f9b34fb"
+//    case advertisement = "00004024-0000-1000-8000-00805f9b34fb"
+//    case service = "1A7E4024-E3ED-4464-8B7E-751E03D0DC5F"
+    case service = "0000ffe5-0000-1000-8000-00805f9b34fb"
 }
 
 enum ApexpodCharacteristicUUID: String, CBUUIDRawValue {
-    case command = "1A7E2441-E3ED-4464-8B7E-751E03D0DC5F"
-    case data = "1A7E2442-E3ED-4464-8B7E-751E03D0DC5F"
+//    case command = "1A7E2441-E3ED-4464-8B7E-751E03D0DC5F"
+    case command = "0000ffe9-0000-1000-8000-00805f9b34fb"
+//    case data = "1A7E2442-E3ED-4464-8B7E-751E03D0DC5F"
+//    case data = "00002902-0000-1000-8000-00805f9b34fb"
+    case data = "0000ffe4-0000-1000-8000-00805f9b34fb"
+    
 }
 
 extension PeripheralManager.Configuration {
@@ -46,9 +52,11 @@ extension PeripheralManager.Configuration {
                 ]
             ],
             notifyingCharacteristics: [
+                
                 ApexpodServiceUUID.service.cbUUID: [
-//                    OmnipodCharacteristicUUID.command.cbUUID,
-//                    OmnipodCharacteristicUUID.data.cbUUID,
+                    ApexpodCharacteristicUUID.command.cbUUID,
+                    ApexpodCharacteristicUUID.data.cbUUID,
+ 
                 ]
             ],
             valueUpdateMacros: [
